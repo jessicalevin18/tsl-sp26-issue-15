@@ -2,6 +2,9 @@
 
 #### Visualizations
 
+Story on Scripps study abroad
+
+Story on gas boilers
 
 ____________________________________________
 
