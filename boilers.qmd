@@ -1,0 +1,180 @@
+---
+title: "boilers"
+format: pdf
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+library(patchwork)
+library(stringr)
+```
+
+```{r}
+data <- read.csv("boiler.csv")
+#source: https://clausa.app.carto.com/map/07d7be74-69f7-4a7f-9cd7-bb92a84b5db3?lat=34.703793&lng=-112.353511&zoom=5
+```
+
+```{r}
+cols <- c("Texas" = "#A7C9C4", "California" = "#465778", "Florida" = "#A7C9C4", "New York" = "#A7C9C4",
+          "Pennsylvania" = "#A7C9C4", "Illinois" = "#A7C9C4")
+
+col_graph_1 <- data %>%
+  ggplot(aes(x = reorder(State, pop), y = Count, fill = State)) +
+  geom_col()+
+  scale_fill_manual(values = cols, name = "State") +
+  theme_minimal() +
+  theme(text = element_text(family = "Palatino"),
+        axis.title.x = element_text(margin = margin(t = 15)),
+        axis.title.y = element_text(margin = margin(r = 10)),
+        legend.position = "none") +
+  labs(title = str_wrap("Number of Industrial Boilers in Top 6 Most Populous States"),
+       x = "State",
+       y = "Number of Industrial Boilers")
+
+col_graph_1
+```
+
+```{r}
+cols_bw <- c("Texas" = "#AAAAB1", "California" = "#4E4E55", "Florida" = "#AAAAB1", "New York" = "#AAAAB1",
+          "Pennsylvania" = "#AAAAB1", "Illinois" = "#AAAAB1")
+
+bw_graph <- data %>%
+  ggplot(aes(x = reorder(State, pop), y = Count, fill = State)) +
+  geom_col()+
+  scale_fill_manual(values = cols_bw, name = "State") +
+  theme_minimal() +
+  theme(text = element_text(family = "Palatino"),
+        axis.title.x = element_text(margin = margin(t = 15)),
+        axis.title.y = element_text(margin = margin(r = 10)),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "none") +
+  labs(title = "Number of Industrial Boilers in Top 6 Most Populous States",
+       x = "State",
+       y = "Number of Industrial Boilers")
+
+bw_graph
+```
+
+```{r}
+col_graph_2 <- data %>%
+  ggplot(aes(x = reorder(State, pop), y = DAC, fill = State)) +
+  geom_col()+
+  scale_fill_manual(values = cols, name = "State") +
+  theme_minimal() +
+  theme(text = element_text(family = "Palatino"),
+        axis.title.x = element_text(margin = margin(t = 15)),
+        axis.title.y = element_text(margin = margin(r = 10), size = 10),
+        legend.position = "none") +
+  labs(title = str_wrap("Percent of Industrial Boilers in Disadvantaged Areas in Top 6 Most Populous States"),
+       x = "State",
+       y = "Percent of Boilers in Disadvantaged Communities")
+
+col_graph_2
+
+# ggsave("col_disadvantage.pdf", plot = col_graph_2, device = "pdf", width = 8, height = 6)
+
+```
+
+```{r}
+bw_graph_2 <- data %>%
+  ggplot(aes(x = reorder(State, pop), y = DAC, fill = State)) +
+  geom_col()+
+  scale_fill_manual(values = cols_bw, name = "State") +
+  theme_minimal() +
+  theme(text = element_text(family = "Palatino"),
+        axis.title.x = element_text(margin = margin(t = 15)),
+        axis.title.y = element_text(margin = margin(r = 10)),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "none") +
+  labs(title = str_wrap("Percent of Industrial Boilers in Disadvantaged Areas in Top 6 Most Populous States"),
+       x = "State",
+       y = "Percent of Boilers in Disadvantaged Communities")
+
+bw_graph_2
+```
+
+```{r}
+col_graph_3 <- data %>%
+  ggplot(aes(x = reorder(State, pop), y = NOx, fill = State)) +
+  geom_col()+
+  scale_fill_manual(values = cols, name = "State") +
+  theme_minimal() +
+  theme(text = element_text(family = "Palatino"),
+        axis.title.x = element_text(margin = margin(t = 15)),
+        axis.title.y = element_text(margin = margin(r = 10)),
+        legend.position = "none") +
+  labs(title = str_wrap("Average NOx emmissions per year (tons) in Top 6 Most Populous States"),
+       x = "State",
+       y = "Average NOx emmissions per year (tons)")
+
+col_graph_3
+```
+
+```{r}
+
+bw_graph_3 <- data %>%
+  ggplot(aes(x = reorder(State, pop), y = NOx, fill = State)) +
+  geom_col()+
+  scale_fill_manual(values = cols_bw, name = "State") +
+  theme_minimal() +
+  theme(text = element_text(family = "Palatino"),
+        axis.title.x = element_text(margin = margin(t = 15)),
+        axis.title.y = element_text(margin = margin(r = 10)),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "none") +
+  labs(title = str_wrap("Average NOx emmissions per year (tons) in Top 6 Most Populous States"),
+       x = "State",
+       y = "Average NOx emmissions per year (tons)")
+
+bw_graph_3
+```
+
+```{r fig.height=5, fig.width=12}
+# take out the col_graph_3 to remove the graph on avg NOx emissions
+
+col_graph_1 + col_graph_2 + col_graph_3 & 
+  coord_flip() & labs(x = "", title = "")  &
+#  theme(plot.margin = margin(0.1, 0.1, 0.1, 0.1)) +
+  plot_annotation(title = "Industrial Boilers in Top 6 Most Populous States", 
+    theme = theme(plot.title = element_text(family = "Palatino", size = 20)))
+```
+
+```{r fig.height=5, fig.width=12}
+# take out the col_graph_3 to remove the graph on avg NOx emissions
+
+bw_graph + bw_graph_2 + bw_graph_3 &
+  coord_flip() & labs(x = "", title = "")  &
+#  theme(plot.margin = margin(0.1, 0.1, 0.1, 0.1)) +
+  plot_annotation(title = "Industrial Boilers in Top 6 Most Populous States", 
+    theme = theme(plot.title = element_text(family = "Palatino", size = 20)))
+```
+
+```{r}
+boilers <- col_graph_1 + col_graph_2 & 
+  coord_flip() & labs(x = "", title = "")  &
+  plot_annotation(title = "Industrial gas boilers in top six most populous states", 
+    theme = theme(plot.title = element_text(family = "Palatino", size = 20)))
+
+boilers
+```
+
+```{r}
+boilers_bw <- bw_graph + bw_graph_2 & 
+  coord_flip() & labs(x = "", title = "")  &
+  plot_annotation(title = "Industrial gas boilers in top six most populous states", 
+    theme = theme(plot.title = element_text(family = "Palatino", size = 20)))
+
+boilers_bw
+```
+
+```{r}
+ggsave("boilers.pdf", plot = boilers, device = "pdf", width = 8, height = 6)
+
+ggsave("boilers.png", plot = boilers, device = "png", width = 8, height = 6)
+
+ggsave("boilers_bw.pdf", plot = boilers_bw, device = "pdf", width = 8, height = 6)
+```

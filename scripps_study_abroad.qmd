@@ -1,0 +1,91 @@
+---
+title: "scripps_study_abroad"
+format: html
+editor: visual
+---
+
+## Quarto
+
+```{r}
+df<- read_csv("scripps_abroad.csv") 
+df
+```
+
+```{r}
+# data cleaning can ignore
+data <- data.frame(
+  FA10 = 100, SP11 = 61, FA11 = 92, SP12 = 77,
+  FA12 = 76, SP13 = 99, FA13 = 84, SP14 = 74,
+  FA14 = 59, SP15 = 70, FA15 = 79, SP16 = 66,
+  FA16 = 76, SP17 = 73, FA17 = 66, SP18 = 71,
+  FA18 = 83, SP19 = 43, FA19 = 79, SP20 = 107,
+  FA20 = 3, SP21 = 9, FA21 = 31, SP22 = 44,
+  FA22 = 24, SP23 = 71, FA23 = 50, SP24 = 139,
+  FA24 = 67, SP25 = 101, FA25 = 84, SP26 = 73
+)
+
+data_longer <- data %>% 
+  pivot_longer(everything(), names_to = "variable", values_to = "Count") %>% 
+  mutate(Semester = substr(variable, 1, 2),
+         Year = as.integer(substr(variable, 3, 4)),
+         Year = (Year + 2000))
+
+# Select the required columns
+data_longer <- data_longer %>% 
+  select(Semester, Year, Count) 
+
+data_longer <- add_row(data_longer, Semester = "FA", Year = 2025, Count = 84)
+
+data_longer <- add_row(data_longer, Semester = "SP", Year = 2026, Count = 73)
+
+print(data_longer)
+```
+
+```{r}
+test <- read_csv("scripps-abroad.csv")
+```
+
+```{r}
+scripps_abroad <- ggplot(test, aes(x = Year, y = Count, color = Semester)) +
+  geom_line(size = 1) +
+  scale_color_manual(values = c("#E05109", "#7CA68F"), labels = c("Fall", "Spring")) +
+  labs(title = "Scripps study abroad enrollment by semester", x = "School Year", y = "Count") +
+  scale_x_continuous(breaks = c(2010, 2015, 2020, 2025), 
+                     labels = c("2010-11", "2015-16", "2020-21", "2025-26")) +
+  theme_minimal() +
+  theme(text = element_text(family = "Palatino"),
+        axis.title.x = element_text(margin = margin(t = 15)),
+        axis.title.y = element_text(margin = margin(r = 10)),
+        plot.title = element_text(size = 16))
+
+scripps_abroad
+```
+
+```{r}
+scripps_abroad_bw <- ggplot(test, aes(x = Year, y = Count, color = Semester)) +
+  geom_line(size = 1.2) +
+  scale_color_manual(values = c("darkgray", "black"), labels = c("Fall", "Spring")) +
+  labs(title = "Scripps study abroad enrollment by semester", x = "School Year", y = "Count") +
+  scale_x_continuous(breaks = c(2010, 2015, 2020, 2025), 
+                     labels = c("2010-11", "2015-16", "2020-21", "2025-26")) +
+  theme_minimal() +
+  theme(text = element_text(family = "Palatino"),
+        axis.title.x = element_text(margin = margin(t = 15)),
+        axis.title.y = element_text(margin = margin(r = 10)),
+        plot.title = element_text(size = 16),
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      axis.line.x = element_line(colour = "black", linewidth = 0.2),
+        axis.line.y = element_line(colour = "black", linewidth = 0.2)
+      )
+
+scripps_abroad_bw
+```
+
+```{r}
+ggsave("scripps_abroad.pdf", plot = scripps_abroad, device = "pdf", width = 8, height = 6)
+
+ggsave("scripps_abroad.png", plot = scripps_abroad, device = "png", width = 8, height = 6)
+
+ggsave("scripps_abroad_bw.pdf", plot = scripps_abroad_bw, device = "pdf", width = 8, height = 6)
+```
