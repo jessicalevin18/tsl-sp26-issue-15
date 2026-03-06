@@ -2,9 +2,9 @@
 
 #### Visualizations
 
-Story on Scripps study abroad
+Story on Scripps study abroad - (Figure by Jessica Levin • The Student Life)
 
-Story on gas boilers
+Story on gas boilers - (Figure by Evelyn Hao • The Student Life)
 
 ____________________________________________
 
